@@ -3,27 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerTestState : PlayerBaseState {
-  private float time_remaining = 5.0f;
-
-  public PlayerTestState(PlayerStateMachine state_machine) : base(state_machine) {
+  public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine) {
 
   }
 
   public override void Enter() {
-    Debug.Log("Enter");
   }
 
-  public override void Tick(float delta_time) {
-    time_remaining -= delta_time;
+  public override void Tick(float deltaTime) {
+    Vector3 movement = new Vector3();
 
-    Debug.Log(time_remaining);
+    movement.x = -stateMachine.InputReader.MovementValue.x;
+    movement.y = 0;
+    movement.z = stateMachine.InputReader.MovementValue.y;
 
-    if (time_remaining <= 0f) {
-      state_machine.SwitchState(new PlayerTestState(state_machine));
+    stateMachine.Controller.Move(movement * stateMachine.FreeLookMovementSpeed * deltaTime);
+    
+    if (stateMachine.InputReader.MovementValue == Vector2.zero) {
+      stateMachine.Animator.SetFloat("FreeLookSpeed", 0, 0.1f, deltaTime);
+      return;
     }
+
+    stateMachine.Animator.SetFloat("FreeLookSpeed", 1, 0.1f, deltaTime);
+    stateMachine.transform.rotation = Quaternion.LookRotation(movement);
   }
 
   public override void Exit() {
-    Debug.Log("Exit");
   }
 }
