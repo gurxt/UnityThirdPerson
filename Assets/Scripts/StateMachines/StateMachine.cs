@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class StateMachine : MonoBehaviour {
-  [SerializeField] private State current_state;
+  [SerializeField] private State currentState;
 
   private void Update() {
-    current_state?.Tick(Time.deltaTime);    
+    currentState?.Tick(Time.deltaTime);    
   }
 
-  public void SwitchState(State new_state) {
-    current_state?.Exit();
-    current_state = new_state;
-    current_state?.Enter();
+  public void SwitchState(State newState) {
+    currentState?.Exit();
+    currentState = newState;
+    currentState?.Enter();
   }
 }
