@@ -10,7 +10,7 @@ public class PlayerTargetingState : PlayerBaseState {
 
   public override void Enter() {
     stateMachine.InputReader.cancelEvent += OnCancel;
-    stateMachine.Animator.Play(TARGETING_BLEND_TREE_HASH);
+    stateMachine.Animator.CrossFadeInFixedTime(TARGETING_BLEND_TREE_HASH, 0.1f);
   }
   public override void Tick(float deltaTime) {
     if (stateMachine.InputReader.isAttacking) {
