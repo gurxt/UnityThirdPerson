@@ -6,12 +6,12 @@ using UnityEngine.InputSystem;
 
 public class InputReader : MonoBehaviour, Controls.IPlayerActions {
   private Controls controls;
-  public event Action jumpEvent;
-  public event Action dodgeEvent;
-  public event Action targetEvent;
-  public event Action cancelEvent;
+  public event Action JumpEvent;
+  public event Action DodgeEvent;
+  public event Action TargetEvent;
+  public event Action CancelEvent;
   public Vector2 MovementValue { get; private set; }
-  public bool isAttacking { get; private set;}
+  public bool IsAttacking { get; private set;}
 
   void Start() {
     controls = new Controls();
@@ -26,13 +26,13 @@ public class InputReader : MonoBehaviour, Controls.IPlayerActions {
   public void OnJump(InputAction.CallbackContext context) {
     if (!context.performed) return;
 
-    jumpEvent?.Invoke();
+    JumpEvent?.Invoke();
   }
 
   public void OnDodge(InputAction.CallbackContext context) {
     if (!context.performed) return;
 
-    dodgeEvent?.Invoke();
+    DodgeEvent?.Invoke();
   }
 
   public void OnMove(InputAction.CallbackContext context) {
@@ -44,15 +44,15 @@ public class InputReader : MonoBehaviour, Controls.IPlayerActions {
   public void OnTarget(InputAction.CallbackContext context) {
     if (!context.performed) return;
 
-    targetEvent?.Invoke();
+    TargetEvent?.Invoke();
   }
   public void OnCancel(InputAction.CallbackContext context) {
     if (!context.performed) return;
 
-    cancelEvent?.Invoke();
+    CancelEvent?.Invoke();
   }
   public void OnAttack(InputAction.CallbackContext context) {
-    if (context.performed) isAttacking = true;
-    else if (context.canceled) isAttacking = false;
+    if (context.performed) IsAttacking = true;
+    else if (context.canceled) IsAttacking = false;
   }
 }

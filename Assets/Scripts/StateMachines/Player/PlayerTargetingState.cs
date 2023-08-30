@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class PlayerTargetingState : PlayerBaseState {
   private readonly int TARGETING_BLEND_TREE_HASH = Animator.StringToHash("TargetingBlendTree");
-  private readonly int TARGETING_FORWARD_HASH = Animator.StringToHash("TargetingForward");
-  private readonly int TARGETING_RIGHT_HASH = Animator.StringToHash("TargetingRight");
+  private readonly int TARGETING_FORWARD_HASH = Animator.StringToHash("Forward");
+  private readonly int TARGETING_RIGHT_HASH = Animator.StringToHash("Right");
   public PlayerTargetingState(PlayerStateMachine stateMachine) : base(stateMachine) {}
 
   public override void Enter() {
-    stateMachine.InputReader.cancelEvent += OnCancel;
+    stateMachine.InputReader.CancelEvent += OnCancel;
     stateMachine.Animator.CrossFadeInFixedTime(TARGETING_BLEND_TREE_HASH, 0.1f);
   }
   public override void Tick(float deltaTime) {
-    if (stateMachine.InputReader.isAttacking) {
+    if (stateMachine.InputReader.IsAttacking) {
       stateMachine.SwitchState(new PlayerAttackingState(stateMachine, 0));
       return;
     }
@@ -32,7 +32,7 @@ public class PlayerTargetingState : PlayerBaseState {
     FaceTarget();
   }
   public override void Exit() {
-    stateMachine.InputReader.cancelEvent -= OnCancel;
+    stateMachine.InputReader.CancelEvent -= OnCancel;
   }
   
   private void OnCancel() {
@@ -64,6 +64,5 @@ public class PlayerTargetingState : PlayerBaseState {
       float value = stateMachine.InputReader.MovementValue.x > 0 ? 1f : -1f;
       stateMachine.Animator.SetFloat(TARGETING_RIGHT_HASH, value, 0.1f, deltaTime);
     }
-
   }
 }

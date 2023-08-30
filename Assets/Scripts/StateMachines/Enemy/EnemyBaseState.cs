@@ -28,6 +28,7 @@ public abstract class EnemyBaseState : State {
   }
 
   protected bool IsInChaseRange() {
+    if (stateMachine.Player.IsDead) return false;
     float playerDistanceSquare = (stateMachine.Player.transform.position - stateMachine.transform.position).sqrMagnitude;
     // more performant to use squaring instead of square root
     return playerDistanceSquare <= stateMachine.PlayerDetectionRange * stateMachine.PlayerDetectionRange;

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class PlayerBaseState : State {
   protected PlayerStateMachine stateMachine;
-
   public PlayerBaseState(PlayerStateMachine stateMachine) {
     this.stateMachine = stateMachine;
   }
@@ -25,5 +24,13 @@ public abstract class PlayerBaseState : State {
     lookPosition.y = 0f;
     
     stateMachine.transform.rotation = Quaternion.LookRotation(lookPosition);
+  }
+
+  protected void ReturnToLocomotion() {
+    if (stateMachine.Targeter.CurrentTarget != null) {
+      stateMachine.SwitchState(new PlayerTargetingState(stateMachine));
+    } else {
+      stateMachine.SwitchState(new PlayerFreeLookState(stateMachine));
+    }
   }
 }

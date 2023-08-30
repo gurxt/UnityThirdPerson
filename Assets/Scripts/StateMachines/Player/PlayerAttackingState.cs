@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class PlayerAttackingState : PlayerBaseState {
   private Attack attack;
-  private float previousFrameTime;
   private bool alreadyAppliedForce;
 
   public PlayerAttackingState(PlayerStateMachine stateMachine, int attackIndex) : base(stateMachine) {
     attack = stateMachine.Attacks[attackIndex];
   }
   public override void Enter() {
-    stateMachine.WeaponDamage.SetAttack(attack.AttackDamage);
+    stateMachine.Weapon.SetAttack(attack.AttackDamage, attack.KnockBack);
     stateMachine.Animator.CrossFadeInFixedTime(attack.AnimationName, attack.TransitionDuration);
   }
   public override void Tick(float deltaTime) {
     Move(deltaTime);
     FaceTarget();
 
-    float normalizedTime = GetNormalizedTime();
+    float normalizedTime = GetNormalizedTime(stateMachine.Animator);
 
     if (normalizedTime < 1f) {
       if (normalizedTime >= attack.ForceTime)
         TryApplyForce();
-      if (stateMachine.InputReader.isAttacking)
+      if (stateMachine.InputReader.IsAttacking)
         TryComboAttack(normalizedTime);
     } else {
       if (stateMachine.Targeter.CurrentTarget != null)
@@ -31,8 +30,6 @@ public class PlayerAttackingState : PlayerBaseState {
       else
         stateMachine.SwitchState(new PlayerFreeLookState(stateMachine));
     }
-
-    previousFrameTime = normalizedTime;
   }
 
   public override void Exit() {}
@@ -49,18 +46,5 @@ public class PlayerAttackingState : PlayerBaseState {
     if (alreadyAppliedForce) return;
     stateMachine.ForceReceiver.AddForce(stateMachine.transform.forward * attack.Force);
     alreadyAppliedForce = true;
-  }
-
-  private float GetNormalizedTime() {
-    AnimatorStateInfo currentInfo = stateMachine.Animator.GetCurrentAnimatorStateInfo(0);
-    AnimatorStateInfo nextInfo = stateMachine.Animator.GetNextAnimatorStateInfo(0);
-
-    if (stateMachine.Animator.IsInTransition(0) && nextInfo.IsTag("Attack")) {
-      return nextInfo.normalizedTime;
-    } else if (!stateMachine.Animator.IsInTransition(0) && currentInfo.IsTag("Attack")) {
-      return currentInfo.normalizedTime;
-    } else {
-      return 0f;
-    }
   }
 }
